@@ -1,0 +1,40 @@
+@baseUrl = http://localhost:5173
+@apiPath = /api/transactions
+
+
+### 1. Valid seat number — expect 200 with student info + transactions
+GET {{baseUrl}}{{apiPath}}?seat=X039423
+Accept: application/json
+
+
+### 2. Another seat number
+GET {{baseUrl}}{{apiPath}}?seat=B202
+Accept: application/json
+
+
+### 3. Missing seat param — expect 400
+GET {{baseUrl}}{{apiPath}}
+Accept: application/json
+
+
+### 4. Seat not found in DB — expect 404
+GET {{baseUrl}}{{apiPath}}?seat=XXXX999
+Accept: application/json
+
+
+### 5. Seat with special characters (edge case)
+GET {{baseUrl}}{{apiPath}}?seat=A-101
+Accept: application/json
+
+
+### 6. Empty seat param — expect 400
+GET {{baseUrl}}{{apiPath}}?seat=
+Accept: application/json
+
+
+
+### SSC seat — recheck_type 1 (without photocopy) — all subjects
+GET http://localhost:5173/api/check_inserted?seat=H081576&recheck_type=1&subjects=MARATHI (1ST LANG),HINDI (2/3 LANG),ENGLISH (2/3 LANG),MATHEMATICS,SOCIAL SCIENCES,SCIENCE & TECHNOLOGY
+
+### SSC seat — recheck_type 2 (with photocopy)
+GET http://localhost:5173/api/check_inserted?seat=L051646&recheck_type=2&subjects=MARATHI (1ST LANG),HINDI (2/3 LANG),ENGLISH (2/3 LANG),MATHEMATICS,SCIENCE & TECHNOLOGY,SOCIAL SCIENCES
