@@ -100,6 +100,7 @@ function getStatus(val) {
   return 'unknown';  
 }
 
+
 export async function checkApplied(seat, recheckType, subjects = []) {
   try {
     const subjectsParam = subjects.join(',');

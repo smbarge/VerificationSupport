@@ -38,6 +38,14 @@ export async function POST({ request }) {
     const addressId                   = pending.address_id    ?? null;
     const pendingRecheckApplicationId = pending.pending_recheck_application_id;
 
+    console.log(
+      "Data is Below....:",
+      pending,
+      deliveryType,
+      addressId,
+      pendingRecheckApplicationId
+    );
+
     // ── Map subject names → subj_codes ──
     const subjectNames = Array.isArray(body.udf3)
       ? body.udf3

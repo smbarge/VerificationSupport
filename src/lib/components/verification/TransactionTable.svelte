@@ -500,7 +500,7 @@ async function handleInsert(data: Record<string, any> | null) {
           <th class="px-4 py-3 text-left text-xs text-blue-200 font-semibold uppercase tracking-wider w-8">#</th>
           <th class="px-4 py-3 text-left text-xs text-blue-200 font-semibold uppercase tracking-wider">Client Transaction ID</th>
           <th class="px-4 py-3 text-left text-xs text-blue-200 font-semibold uppercase tracking-wider">Date & Time</th>
-          <th class="px-4 py-3 text-left text-xs text-blue-200 font-semibold uppercase tracking-wider">Fee Type</th>
+          <th class="px-4 py-3 text-left text-xs text-blue-200 font-semibold uppercase tracking-wider">subjects</th>
           <th class="px-4 py-3 text-left text-xs text-blue-200 font-semibold uppercase tracking-wider">Mode</th>
           <th class="px-4 py-3 text-right text-xs text-blue-200 font-semibold uppercase tracking-wider">Amount</th>
           <th class="px-4 py-3 text-center text-xs text-blue-200 font-semibold uppercase tracking-wider">Status</th>

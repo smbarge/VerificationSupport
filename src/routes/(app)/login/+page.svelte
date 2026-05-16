@@ -28,7 +28,7 @@
       isAuthenticated.set(true); 
       success = true;
       await new Promise((r) => setTimeout(r, 1200));
-      goto('/dashboard');
+      goto('/home');
     } else {
       error = 'Incorrect password. Please try again.';
       loading = false;
