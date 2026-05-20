@@ -102,7 +102,7 @@ export async function GET({ url }) {
 			`
 			SELECT
 				client_txn_id,
-				encode(encryptdata, 'escape') AS encoded_data
+				(encryptdata, 'escape') AS encoded_dataencode
 			FROM payment_transactions
 			WHERE seat_no = $1
 			ORDER BY client_txn_id DESC
