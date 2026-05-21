@@ -138,6 +138,18 @@
     goto("/verification/dashboard");
   }
 
+  const DISPLAY_COLUMNS = [
+  'Udf1',
+  'Udf2',
+  'Udf3',
+  'ClientTxnId',
+  'SabpaisaTxnId',
+  'Amount',
+  'Status',
+  'TransDate',
+  'Udf15',
+];
+
   
 </script>
 
@@ -454,6 +466,13 @@
                     {col}
                   </th>
                 {/each}
+
+                <!-- {#each DISPLAY_COLUMNS as col}
+                  <th class="px-4 py-3 text-left font-bold border-b border-gray-100 whitespace-nowrap"
+                      style="color: #1a3a6b;">
+                    {col}
+                  </th>
+                {/each} -->
               </tr>
             </thead>
             <tbody>
@@ -477,6 +496,10 @@
                       >{cell}</td
                     >
                   {/each}
+
+                  <!-- {#each DISPLAY_COLUMNS as col}
+                  <td class="px-4 py-2.5 text-gray-700 whitespace-nowrap">{row[col] ?? '—'}</td>
+                {/each} -->
                 </tr>
               {/each}
             </tbody>
