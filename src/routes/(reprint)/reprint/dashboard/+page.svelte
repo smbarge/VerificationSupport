@@ -257,8 +257,8 @@ function GoBack() {
         <!-- Seat Badge -->
         <div class="ml-auto">
           <span class="bg-blue-50 text-[#1a3a6b] text-xs font-bold px-3 py-1.5 rounded-full border border-blue-100">
-            Seat No: {searchedSeat} {studentInfo.seat}
-          </span>
+            Seat No: {studentInfo.seat}
+                    </span>
 
           <!-- <span class="text-xs font-bold px-3 py-1.5 rounded-full border
           {studentInfo.board === 'HSC'
@@ -271,7 +271,7 @@ function GoBack() {
       </div>
 
 
-      <TransactionTable {transactions} {searchedSeat} />
+      <TransactionTable {transactions} {searchedSeat} actualSeat={studentInfo?.seat ?? searchedSeat} />
 
 
     {/if}

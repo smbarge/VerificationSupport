@@ -7,6 +7,10 @@
   import { goto } from '$app/navigation';
   import { isAuthenticated } from '$lib/stores/auth';
 
+
+  let refundModalOpen = false;
+
+
   onMount(() => {
   if (!get(isAuthenticated)) {
     goto('/login');
@@ -97,7 +101,18 @@ function GoBack() {
     goto('/home');
   }
 
+function openRefundModal()  { refundModalOpen = true;  }
 
+
+function closeRefundModal() { refundModalOpen = false; }
+
+
+function goToRefund( type : 'hsc'|'ssc'){
+  refundModalOpen = false;
+  // /goto(type === 'hsc' ? '/refund/hsc' : '/refund/ssc');
+   goto(type === 'hsc' ? '/verification/refund/hsc' : '/verification/refund/ssc');
+
+}
 </script>
 
      <!-- PAGE LAYOUT -->
@@ -151,6 +166,21 @@ function GoBack() {
  <!-- MAIN CONTENT -->
   <main class="flex-1 max-w-7xl mx-auto w-full px-4 py-6 space-y-5">
 
+    <!-- ── REFUND BUTTON ── -->
+<!-- ── REFUND BUTTON ── -->
+<div class="flex justify-end items-center mb-5">
+  <button
+    onclick={openRefundModal}
+    class="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white
+           shadow-sm transition-all duration-200 hover:opacity-90 active:scale-95"
+    style="background-color: #2b4f87;"
+  >
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/>
+    </svg>
+    Refund
+  </button>
+</div>
 
 <!-- ── SEACH CARD ── -->
 <div class="bg-white rounded-2xl shadow border border-gray-100 overflow-hidden">
@@ -301,3 +331,84 @@ function GoBack() {
   </main>
   
 </div>
+
+<!-- REFUND PAYMENT MODAL -->
+{#if refundModalOpen}
+  <div
+    class="fixed inset-0 z-50 flex items-center justify-center p-4"
+    style="background: rgba(0,0,0,0.5);"
+    onclick={(e) => { if (e.target === e.currentTarget) closeRefundModal(); }}
+    role="dialog"
+    aria-modal="true"
+  >
+  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden">
+
+    <!-- Modal Header -->
+    <div style="background-color: #1a3a6b;" class="px-5 py-4 flex items-center justify-between">
+      <div>
+        <h3 class="text-white font-bold text-sm">Select Refund Type</h3>
+        <p class="text-blue-300 text-xs mt-0.5">Choose the board to initiate payment refund</p>
+      </div>
+      <button
+        onclick={closeRefundModal}
+        class="text-white/70 hover:text-white transition-colors text-xl font-bold leading-none"
+      >✕</button>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="p-5 space-y-3">
+
+      <!-- HSC Option -->
+      <button
+        onclick={() => goToRefund('hsc')}
+        class="w-full flex items-center gap-4 p-4 border-2 border-gray-100 rounded-xl
+               hover:border-[#2bbcb0] hover:bg-teal-50/40 transition-all text-left"
+      >
+        <div class="w-10 h-10 rounded-xl bg-green-100 flex items-center justify-center flex-shrink-0">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/>
+          </svg>
+        </div>
+        <div class="flex-1">
+          <p class="font-bold text-gray-800 text-sm">HSC Payment Refund</p>
+          <p class="text-xs text-gray-400 mt-0.5">Higher Secondary Certificate — Class 12</p>
+        </div>
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+        </svg>
+      </button>
+
+      <!-- SSC Option -->
+      <button
+        onclick={() => goToRefund('ssc')}
+        class="w-full flex items-center gap-4 p-4 border-2 border-gray-100 rounded-xl
+               hover:border-[#2bbcb0] hover:bg-teal-50/40 transition-all text-left"
+      >
+        <div class="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center flex-shrink-0">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+          </svg>
+        </div>
+        <div class="flex-1">
+          <p class="font-bold text-gray-800 text-sm">SSC Payment Refund</p>
+          <p class="text-xs text-gray-400 mt-0.5">Secondary School Certificate — Class 10</p>
+        </div>
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+        </svg>
+      </button>
+
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="px-5 py-3 border-t border-gray-100 flex justify-end bg-gray-50">
+      <button
+        onclick={closeRefundModal}
+        class="px-5 py-2 text-sm font-semibold text-white rounded-xl hover:opacity-90 transition-all"
+        style="background-color: #1a3a6b;"
+      >Cancel</button>
+    </div>
+
+  </div>
+</div>
+{/if}

@@ -98,11 +98,23 @@ export async function GET({ url }) {
 			);
 		}
 
+		// const result = await db.query(
+		// 	`
+		// 	SELECT
+		// 		client_txn_id,
+		// 		(encryptdata, 'escape') AS encoded_dataencode
+		// 	FROM payment_transactions
+		// 	WHERE seat_no = $1
+		// 	ORDER BY client_txn_id DESC
+		// 	`,
+		// 	[seat]
+		// );
+
 		const result = await db.query(
 			`
 			SELECT
 				client_txn_id,
-				(encryptdata, 'escape') AS encoded_dataencode
+				encode(encryptdata, 'escape') AS encoded_data
 			FROM payment_transactions
 			WHERE seat_no = $1
 			ORDER BY client_txn_id DESC
@@ -142,7 +154,7 @@ export async function GET({ url }) {
 		);
 
 		return json({
-			error: true,
+			error: 0,
 			responses
 		}); 
 

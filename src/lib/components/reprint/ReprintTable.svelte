@@ -18,6 +18,8 @@
 
   export let transactions: Transaction[] = [];
   export let searchedSeat: string        = '';
+  export let actualSeat: string          = '';   // ← ADD THIS
+
 
   let filterStatus = '';
 
@@ -319,7 +321,7 @@
         class="text-xs font-semibold px-2.5 py-1 rounded-full border"
         style="background-color: rgba(43,188,176,0.1); color: #2bbcb0; border-color: rgba(43,188,176,0.2);"
       >
-        Seat: {searchedSeat}
+        Seat: {actualSeat || searchedSeat}
       </span>
     </div>
     
@@ -332,6 +334,7 @@
         <tr style="background-color: #1a3a6b;">
           <th class="px-4 py-3 text-left text-xs text-blue-200 font-semibold uppercase tracking-wider w-8">Sr.No</th>
           <th class="px-4 py-3 text-left text-xs text-blue-200 font-semibold uppercase tracking-wider">Client Transaction ID</th>
+          <th class="px-4 py-3 text-left text-xs text-blue-200 font-semibold uppercase tracking-wider">Seat No</th>
           <th class="px-4 py-3 text-left text-xs text-blue-200 font-semibold uppercase tracking-wider">Date & Time</th>
           <th class="px-4 py-3 text-left text-xs text-blue-200 font-semibold uppercase tracking-wider">Fee Type</th>
           <th class="px-4 py-3 text-left text-xs text-blue-200 font-semibold uppercase tracking-wider">Mode</th>
@@ -349,6 +352,12 @@
           <td class="px-4 py-3.5">
             <span class="font-mono text-xs text-gray-500 bg-gray-50 px-2 py-0.5 rounded">
               {t.txnId}
+            </span>
+          </td>
+
+           <td class="px-4 py-3.5">
+            <span class="font-mono text-xs text-gray-500 bg-gray-50 px-2 py-0.5 rounded font-bold text-[#1a3a6b]">
+              {t.seat}
             </span>
           </td>
 

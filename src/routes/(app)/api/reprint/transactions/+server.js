@@ -75,7 +75,7 @@ const checkTransactionStatus = async ({
 
 	} catch (err) {
 
-		console.error('API Error:', err.message);
+		//console.error('API Error:', err.message);
 
 		return {
 			error: -1,
@@ -103,7 +103,7 @@ export async function GET({ url }) {
 
             if (seat) {
                 result = await db.query(
-                    `SELECT client_txn_id, encryptdata
+                    `SELECT client_txn_id, encryptdata,seat_no
                     FROM payment_transactions
                     WHERE seat_no = $1
                     ORDER BY client_txn_id DESC`,
@@ -114,7 +114,7 @@ export async function GET({ url }) {
                 const cleanPhone = phone.replace(/\D/g, '').slice(-10);
                 
                 result = await db.query(
-                    `SELECT client_txn_id, encryptdata
+                    `SELECT client_txn_id, encryptdata ,seat_no
                     FROM payment_transactions
                     WHERE payer_mobile = $1
                     ORDER BY client_txn_id DESC`,
@@ -123,8 +123,8 @@ export async function GET({ url }) {
             }
 
         console.log('Search type:', seat ? 'seat' : 'phone');
-console.log('Search value:', seat || phone);
-console.log('Rows found:', result.rows.length);
+		console.log('Search value:', seat || phone);
+		console.log('Rows found:', result.rows.length);
 
 
 		if (result.rows.length === 0) {
@@ -138,6 +138,7 @@ console.log('Rows found:', result.rows.length);
 
 			result.rows.map(async (element) => {
 
+
 				const response = await checkTransactionStatus({
 					encoded_data: element.encryptdata,
 					client_code: 'MAHA19'
@@ -150,12 +151,49 @@ console.log('Rows found:', result.rows.length);
 
         return {
 					client_txn_id: element.client_txn_id,
+					seat_no: element.seat_no,
 					response: response?.data?.statusResponseData
 						? parseDecrypted(decrypt(response.data.statusResponseData))
 						: {}
 				};
 
 			})
+
+
+		// AFTER
+			// result.rows.map(async (element) => {
+
+			// 	// Skip rows with missing encryptdata
+			// 	if (!element.encryptdata) {
+			// 		return {
+			// 			client_txn_id: element.client_txn_id,
+			// 			seat_no: element.seat_no,
+			// 			response: {}
+			// 		};
+			// 	}
+
+			// 	const response = await checkTransactionStatus({
+			// 		encoded_data: element.encryptdata,
+			// 		client_code: 'MAHA19'
+			// 	});
+
+			// 	// SabPaisa returned 400 — treat as empty, don't crash
+			// 	if (response.error) {
+			// 		return {
+			// 			client_txn_id: element.client_txn_id,
+			// 			seat_no: element.seat_no,
+			// 			response: {}
+			// 		};
+			// 	}
+
+			// 	return {
+			// 		client_txn_id: element.client_txn_id,
+			// 		seat_no: element.seat_no,
+			// 		response: response?.data?.statusResponseData
+			// 			? parseDecrypted(decrypt(response.data.statusResponseData))
+			// 			: {}
+			// 	};
+			// })
 		);
 
 		return json({

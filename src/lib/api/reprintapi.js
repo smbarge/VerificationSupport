@@ -29,6 +29,7 @@ export async function fetchTransactions(seat, phone = null) {
     return {
       txnId:   item.client_txn_id,
       date:    r.transDate ?? '',
+      seat:    item.seat_no ?? '—', 
       time:    '',
       type:    Array.isArray(r.udf3) ? r.udf3.join(', ') : (r.udf3 ?? 'Reprint'),
       amount:  parseFloat(r.paidAmount) || parseFloat(r.amount) || 0,
@@ -60,8 +61,7 @@ export async function fetchTransactions(seat, phone = null) {
     name:   infoSource.payerName                                           || '—',
     email:  infoSource.payerEmail   === 'null' ? '—' : (infoSource.payerEmail   || '—'),
     mobile: mobileSource.payerMobile === 'null' ? '—' : (mobileSource.payerMobile || '—'),
-    seat:   seat,
-    // No board — reprint doesn't differentiate
+    seat: data.responses?.[0]?.seat_no || seat || '—',
   };
 
   console.log("Information student ...",studentInfo);
