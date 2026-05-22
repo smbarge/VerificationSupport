@@ -1,6 +1,6 @@
 <script lang="ts">
 import { checkApplied } from '$lib/api/api.js';
-import { insertResponse, insertTransaction } from '$lib/api/api.js';
+import { insertResponse, insertTransaction ,fetchRecheckTransactions } from '$lib/api/api.js';
 
 
    type TxnStatus = 'success' | 'failed' | 'aborted' | 'refunded' | 'unknown';
@@ -10,6 +10,7 @@ import { insertResponse, insertTransaction } from '$lib/api/api.js';
     date:    string;
     time:    string;
     type:    string;
+    recheckType?: string;
     amount:  number;
     status:  TxnStatus;
     gateway: string;
@@ -18,7 +19,23 @@ import { insertResponse, insertTransaction } from '$lib/api/api.js';
     raw?: Record<string, string>;
   }
 
+  interface RecheckTransaction {
+  sr_no: number;
+  recheck_application_id: number;
+  seat_no: string;
+  divn_code: number;
+  recheck_type: string;
+  status: string;
+  date: string;
+  delivery_type: string;
+  sabpaisa_trans_id: string;
+  client_trans_id: string;
+  subjects: { subj_code: string; subj_name: string }[];
+}
+
   export let transactions: Transaction[] = [];
+  let recheckTransactions: RecheckTransaction[] = [];
+  let loadingRecheck = false;
   export let searchedSeat: string        = '';
 
   let filterStatus = '';
@@ -97,24 +114,6 @@ let insertResponseError = '';
 
   $: if (transactions) filterStatus = '';
 
-  
-  // function getStatusClass(status: TxnStatus): string {
-  //   if (status === 'success') return 'bg-green-50 text-green-700 border border-green-100';
-  //   if (status === 'failed')  return 'bg-red-50   text-red-600   border border-red-100';
-  //   return                           'bg-amber-50 text-amber-600 border border-amber-100';
-  // }
-
-  // function getDotClass(status: TxnStatus): string {
-  //   if (status === 'success') return 'bg-green-500';
-  //   if (status === 'failed')  return 'bg-red-400';
-  //   return                           'bg-amber-400';
-  // }
-
-  // function getStatusLabel(status: TxnStatus): string {
-  //   if (status === 'success') return 'Success';
-  //   if (status === 'failed')  return 'Failed';
-  //   return                           'Pending';
-  // }
 
   function getStatusClass(status: TxnStatus): string {
   if (status === 'success')  return 'bg-green-50 text-green-700 border border-green-100';
@@ -145,7 +144,7 @@ function getStatusLabel(status: TxnStatus): string {
     return '₹' + amount.toLocaleString('en-IN');
   }
 
-  // ──label map for modal display ──
+  // ──label map for modal display
   const fieldLabels: Record<string, string> = {
     payerName:        'Payer Name',
     payerEmail:       'Payer Email',
@@ -189,7 +188,7 @@ function getStatusLabel(status: TxnStatus): string {
     'sabpaisaTxnId','sabpaisaErrorCode','rrn'
   ];
 
-//   //Handel Insert  function 
+//Handel Insert  function
 //   function handleInsert(data: Record<string, string> | null) {
 //   if (!data) return;
 //   console.log('Insert transaction:', data);
@@ -295,6 +294,28 @@ async function handleInsert(data: Record<string, any> | null) {
   }
 }
 
+//load transction
+async function loadRecheckTransactions(seat: string) {
+  loadingRecheck = true;
+  try {
+    const result = await fetchRecheckTransactions(seat);
+    if (result.error) {
+      console.error('Recheck fetch error:', result.error);
+      recheckTransactions = [];
+    } else {
+      recheckTransactions = result.transactions;
+    }
+  } catch (err) {
+    console.error('Unexpected error loading recheck transactions:', err);
+    recheckTransactions = [];
+  } finally {
+    loadingRecheck = false;
+  }
+}
+
+$: if(searchedSeat){
+  loadRecheckTransactions(searchedSeat);
+}
 
 </script>
 
@@ -501,6 +522,7 @@ async function handleInsert(data: Record<string, any> | null) {
           <th class="px-4 py-3 text-left text-xs text-blue-200 font-semibold uppercase tracking-wider">Client Transaction ID</th>
           <th class="px-4 py-3 text-left text-xs text-blue-200 font-semibold uppercase tracking-wider">Date & Time</th>
           <th class="px-4 py-3 text-left text-xs text-blue-200 font-semibold uppercase tracking-wider">subjects</th>
+          <th class="px-4 py-3 text-left text-xs text-blue-200 font-semibold uppercase tracking-wider">Recheck Type</th>
           <th class="px-4 py-3 text-left text-xs text-blue-200 font-semibold uppercase tracking-wider">Mode</th>
           <th class="px-4 py-3 text-right text-xs text-blue-200 font-semibold uppercase tracking-wider">Amount</th>
           <th class="px-4 py-3 text-center text-xs text-blue-200 font-semibold uppercase tracking-wider">Status</th>
@@ -533,6 +555,16 @@ async function handleInsert(data: Record<string, any> | null) {
             {/each}
           </div>
         </td>
+
+         <td class="px-4 py-3.5">
+          <span class="text-xs font-medium bg-purple-50 text-purple-700 px-2 py-0.5 rounded-full border border-purple-100">
+            {t.recheckType === '1' ? 'Without Photocopy' :
+            t.recheckType === '2' ? 'With Photocopy' :
+            t.recheckType === '3' ? 'Re-Evaluation' : '—'}
+          </span>
+        </td>
+
+        
 
           <td class="px-4 py-3.5">
             <span class="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded font-medium">
@@ -627,3 +659,183 @@ async function handleInsert(data: Record<string, any> | null) {
   </div>
 
 </div>
+
+
+<!-- //Rechek transction -->
+{#if recheckTransactions.length > 0}
+
+<div class="bg-white rounded-2xl shadow border border-gray-100 overflow-hidden mt-6">
+
+  <!-- Header -->
+  <div
+    class="px-5 py-3.5 border-b border-gray-100 flex items-center justify-between"
+    style="background: linear-gradient(to right, #f8fffe, #f0faf9);"
+  >
+
+    <div class="flex items-center gap-3">
+
+      <h2 class="text-sm font-bold text-gray-700">
+        Recheck Applications
+      </h2>
+
+      <span
+        class="text-xs font-semibold px-2.5 py-1 rounded-full border"
+        style="background-color: rgba(43,188,176,0.1); color: #2bbcb0;"
+      >
+        {recheckTransactions.length} Records
+      </span>
+
+    </div>
+
+  </div>
+
+  <!-- Table -->
+  <div class="overflow-x-auto">
+
+    <table class="w-full text-sm">
+
+      <thead>
+
+        <tr style="background-color: #1a3a6b;">
+
+          <th class="px-4 py-3 text-left text-xs text-blue-200 font-semibold">#</th>
+
+          <th class="px-4 py-3 text-left text-xs text-blue-200 font-semibold">
+            SEAT NO 
+          </th>
+
+         <th class="px-4 py-3 text-left text-xs text-blue-200 font-semibold">
+            DATE & TIME
+          </th>
+
+
+          <th class="px-4 py-3 text-left text-xs text-blue-200 font-semibold">
+            APP ID
+          </th>
+
+          <th class="px-4 py-3 text-left text-xs text-blue-200 font-semibold">
+            SUBJECTS
+          </th>
+
+          <th class="px-4 py-3 text-left text-xs text-blue-200 font-semibold">
+            STATUS
+          </th>
+
+          <th class="px-4 py-3 text-left text-xs text-blue-200 font-semibold">
+           RECHECK TYPE
+          </th>
+
+          <th class="px-4 py-3 text-left text-xs text-blue-200 font-semibold">
+            DELIVARY MODE
+          </th>
+
+         <th class="w-50 px-4 py-3 text-left text-xs text-blue-200 font-semibold">
+          CLIENT TRANSACTION ID
+        </th>
+
+          <th class="px-4 py-3 text-left text-xs text-blue-200 font-semibold">
+            SUBPAISA TRANSACTION ID
+          </th>
+
+        </tr>
+
+      </thead>
+
+      <tbody>
+
+        {#each recheckTransactions as row}
+
+        <tr class="border-t border-gray-50 hover:bg-teal-50/30 transition-colors">
+
+          <td class="px-4 py-3 text-xs text-gray-500">
+            {row.sr_no}
+          </td>
+
+          <td class="px-4 py-3">
+            <span class="font-semibold text-gray-700">
+              {row.seat_no}
+            </span>
+          </td>
+
+         <td class="px-4 py-3 text-gray-500 whitespace-nowrap">
+            {new Date(row.date).toLocaleString()}
+          </td>
+
+          <td class="px-4 py-3">
+            <span class="font-mono text-xs bg-gray-50 px-2 py-1 rounded text-gray-600">
+              {row.recheck_application_id}
+            </span>
+          </td>
+
+          <td class="px-4 py-3">
+            <div class="flex flex-wrap gap-1">
+              {#each row.subjects as s}
+                <span class="text-xs bg-blue-50 text-[#1a3a6b] px-2 py-0.5 rounded-full border border-blue-100">
+                  {s.subj_name || s.subj_code}
+                </span>
+              {/each}
+              {#if row.subjects.length === 0}
+                <span class="text-xs text-gray-300">—</span>
+              {/if}
+            </div>
+          </td>
+          <td class="px-4 py-3">
+
+            <span
+              class="text-xs px-3 py-1 rounded-full font-semibold
+              {row.status === 'SUCCESS'
+                ? 'bg-green-50 text-green-700'
+                : 'bg-red-50 text-red-600'}"
+            >
+              {row.status}
+            </span>
+
+          </td>
+
+            <td class="px-4 py-3">
+
+            <span class="text-xs px-2 py-1 rounded-full bg-blue-50 text-[#1a3a6b] border border-blue-100">
+
+              {row.recheck_type}
+
+            </span>
+
+          </td>
+
+          <td class="px-4 py-3 text-gray-600">
+            {row.delivery_type}
+          </td>
+
+          <td class="px-4 py-3">
+
+            <span class="font-mono text-xs bg-gray-50 px-2 py-1 rounded">
+
+              {row.client_trans_id}
+
+            </span>
+
+          </td>
+
+          <td class="px-4 py-3">
+
+            <span class="font-mono text-xs bg-gray-50 px-2 py-1 rounded">
+
+              {row.sabpaisa_trans_id}
+
+            </span>
+
+          </td>
+
+        </tr>
+
+        {/each}
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+</div>
+
+{/if}

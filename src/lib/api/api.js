@@ -28,6 +28,7 @@ console.log("Data ...", data);
       date:    r.transDate ?? '',
       time:    '',
       type:    Array.isArray(r.udf3) ? r.udf3.join(', ') : (r.udf3 ?? 'Fee Payment'),
+      recheckType: r.udf1 ?? '',
       amount:  parseFloat(r.paidAmount) || parseFloat(r.amount) || 0,
       status:  getStatus(r.status),
       mode:    r.paymentMode ?? 'N/A',
@@ -147,6 +148,61 @@ export async function insertTransaction(data) {
     return { success: true, message: result.message };
   } catch (err) {
     return { error: err.message };
+  }
+}
+
+export async function fetchRecheckTransactions(seat) {
+
+  const board = getBoard(seat);
+
+  // ── Dynamic API selection ──
+  const endpoint =
+    board === 'HSC'
+      ? `/api/check_recheckdata?seat=${encodeURIComponent(seat)}`
+      : `/api/check_recheckdata?seat=${encodeURIComponent(seat)}`;
+
+  try {
+
+    const res  = await fetch(endpoint);
+    const data = await res.json();
+
+    console.log('Recheck Transactions...', data);
+
+    if (!res.ok) {
+      return {
+        error: data.errorMsg || 'Something went wrong',
+        transactions: []
+      };
+    }
+
+    // ── Format response ──
+   const transactions = (data.data || []).map((row) => ({
+    sr_no:                  row.sr_no,
+    recheck_application_id: row.recheck_application_id,
+    seat_no:                row.seat_no,
+    divn_code:              row.divn_code,
+    recheck_type:           row.recheck_type,
+    status:                 row.status,
+    date:                   row.date,
+    delivery_type:          row.delivery_type,
+    sabpaisa_trans_id:      row.sabpaisa_trans_id,
+    client_trans_id:        row.client_trans_id,
+    subjects:               row.subjects || []
+}));
+
+    return {
+      error: null,
+      transactions
+    };
+
+  } catch (err) {
+
+    console.error(err);
+
+    return {
+      error: err.message,
+      transactions: []
+    };
   }
 }
 

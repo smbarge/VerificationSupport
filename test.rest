@@ -40,3 +40,6 @@ GET http://localhost:5173/api/check_inserted?seat=H081576&recheck_type=1&subject
 GET http://localhost:5173/api/check_inserted?seat=L051646&recheck_type=2&subjects=MARATHI (1ST LANG),HINDI (2/3 LANG),ENGLISH (2/3 LANG),MATHEMATICS,SCIENCE & TECHNOLOGY,SOCIAL SCIENCES
 
 
+###
+GET http://localhost:5173/api/check_recheckdata?seat=S044781
+Content-Type: application/json

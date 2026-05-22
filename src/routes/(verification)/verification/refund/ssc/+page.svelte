@@ -116,6 +116,23 @@
   }
 
   function goBack() { goto('/verification/dashboard'); }
+
+    const DISPLAY_COLUMNS = [
+  'Trans ID',
+  'Client Trans ID',
+  'Paid Amount',
+  'Payment Status',
+  'Payee Mob number',
+  'Client Code',
+  'Payment Mode',
+  'Udf1',
+  'Udf2',
+  'Udf3',
+  'Udf15',
+  'tag',
+  'dbTag',
+  'recheck_application_id',
+];
 </script>
 
 <!-- PAGE LAYOUT -->
@@ -179,7 +196,7 @@
     </div>
     {/if}
 
-    <div class="flex justify-center">
+    <div class="flex justify-start">
       <div class="w-full max-w-md space-y-4">
 
         <!-- Upload Card -->
@@ -193,8 +210,8 @@
             </h2>
           </div>
 
-          <div class="p-6">
-            <label class="flex flex-col items-center justify-center border-2 rounded-xl p-10 cursor-pointer transition-all
+          <div class="p-4">
+            <label class="flex flex-col items-center justify-start border-2 rounded-xl p-10 cursor-pointer transition-all
                    {uploadFile ? 'border-[#2bbcb0] bg-teal-50' : 'border-dashed border-gray-200 hover:border-[#2bbcb0] hover:bg-teal-50/30'}">
               <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-4"
                    style="background-color: {uploadFile ? '#d1faf4' : '#f3f4f6'};">
@@ -281,12 +298,18 @@
           <th class="px-4 py-3 text-left text-gray-500 font-bold border-b border-gray-100 whitespace-nowrap sticky left-0 bg-[#f0fdf9]">
             Sr No
           </th>
-          {#each Object.keys(parsedData[0]) as col}
+          <!-- {#each Object.keys(parsedData[0]) as col}
             <th class="px-4 py-3 text-left font-bold border-b border-gray-100 whitespace-nowrap"
                 style="color: #1a3a6b;">
               {col}
             </th>
-          {/each}
+          {/each} -->
+             {#each DISPLAY_COLUMNS as col}
+                  <th class="px-4 py-3 text-left font-bold border-b border-gray-100 whitespace-nowrap"
+                      style="color: #1a3a6b;">
+                    {col}
+                  </th>
+                {/each}
         </tr>
       </thead>
       <tbody>
@@ -295,8 +318,11 @@
             <td class="px-4 py-2.5 font-semibold text-gray-400 whitespace-nowrap sticky left-0 {i % 2 === 0 ? 'bg-white' : 'bg-gray-50/50'}">
               {(currentPage - 1) * pageSize + i + 1}
             </td>
-            {#each Object.values(row) as cell}
+            <!-- {#each Object.values(row) as cell}
               <td class="px-4 py-2.5 text-gray-700 whitespace-nowrap">{cell}</td>
+            {/each} -->
+            {#each DISPLAY_COLUMNS as col}
+                  <td class="px-4 py-2.5 text-gray-700 whitespace-nowrap">{row[col] ?? '—'}</td>
             {/each}
           </tr>
         {/each}
@@ -325,7 +351,7 @@
       <button
         onclick={prevPage}
         disabled={currentPage === 1}
-        class="h-7 w-7 flex items-center justify-center rounded-lg border border-gray-200
+        class="h-7 w-7 flex items-center justify-start rounded-lg border border-gray-200
                text-gray-500 hover:bg-teal-50 hover:border-[#2bbcb0] hover:text-[#2bbcb0]
                disabled:opacity-30 disabled:cursor-not-allowed transition-all text-xs"
       >‹</button>
@@ -335,7 +361,7 @@
         {#if page === 1 || page === totalPages || (page >= currentPage - 1 && page <= currentPage + 1)}
           <button
             onclick={() => goToPage(page)}
-            class="h-7 min-w-[28px] px-1.5 flex items-center justify-center rounded-lg border text-xs font-semibold transition-all
+            class="h-7 min-w-[28px] px-1.5 flex items-center justify-start rounded-lg border text-xs font-semibold transition-all
                    {currentPage === page
                      ? 'text-white border-[#2bbcb0]'
                      : 'border-gray-200 text-gray-500 hover:bg-teal-50 hover:border-[#2bbcb0] hover:text-[#2bbcb0]'}"
@@ -350,7 +376,7 @@
       <button
         onclick={nextPage}
         disabled={currentPage === totalPages}
-        class="h-7 w-7 flex items-center justify-center rounded-lg border border-gray-200
+        class="h-7 w-7 flex items-center justify-start rounded-lg border border-gray-200
                text-gray-500 hover:bg-teal-50 hover:border-[#2bbcb0] hover:text-[#2bbcb0]
                disabled:opacity-30 disabled:cursor-not-allowed transition-all text-xs"
       >›</button>
