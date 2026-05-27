@@ -80,7 +80,6 @@ function getStatus(val) {
   return 'unknown';
 }
 
-
 // Check application status by temp_id (udf1)
 export async function checkApplicationStatus(tempId) {
   try {

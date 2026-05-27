@@ -1,4 +1,4 @@
-// ── HSC seat prefixes ──
+// ── HSC seat prefixes
 const HSC_PREFIXES = ['P','N','R','M','X','V','S','T','W'];
 
 function getBoard(seat) {
@@ -15,7 +15,7 @@ export async function fetchTransactions(seat) {
   const res  = await fetch(endpoint);
   const data = await res.json();
 
-console.log("Data ...", data);
+  console.log("Data ...", data);
 
   if (!res.ok) {
     return { error: data.error || 'Something went wrong' };
@@ -101,7 +101,6 @@ function getStatus(val) {
   return 'unknown';  
 }
 
-
 export async function checkApplied(seat, recheckType, subjects = []) {
   try {
     const subjectsParam = subjects.join(',');
@@ -119,7 +118,7 @@ export async function checkApplied(seat, recheckType, subjects = []) {
   }
 }
 
-// ── Insert Response → calls saveResponseData ──
+// ── Insert Response → calls saveResponseData
 export async function insertResponse(data) {
   try {
     const res    = await fetch('/api/insert_response', {
@@ -135,7 +134,7 @@ export async function insertResponse(data) {
   }
 }
 
-// ── Insert Transaction → calls addRecheckApplication ──
+// ── Insert Transaction → calls addRecheckApplication
 export async function insertTransaction(data) {
   try {
     const res    = await fetch('/api/insert?type=recheck', {
@@ -155,7 +154,7 @@ export async function fetchRecheckTransactions(seat) {
 
   const board = getBoard(seat);
 
-  // ── Dynamic API selection ──
+  // ── Dynamic API selection
   const endpoint =
     board === 'HSC'
       ? `/api/check_recheckdata?seat=${encodeURIComponent(seat)}`
@@ -175,7 +174,7 @@ export async function fetchRecheckTransactions(seat) {
       };
     }
 
-    // ── Format response ──
+    // ── Format response
    const transactions = (data.data || []).map((row) => ({
     sr_no:                  row.sr_no,
     recheck_application_id: row.recheck_application_id,

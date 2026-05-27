@@ -166,8 +166,7 @@ function goToRefund( type : 'hsc'|'ssc'){
  <!-- MAIN CONTENT -->
   <main class="flex-1 max-w-7xl mx-auto w-full px-4 py-6 space-y-5">
 
-    <!-- ── REFUND BUTTON ── -->
-<!-- ── REFUND BUTTON ── -->
+<!--REFUND BUTTON -->
 <div class="flex justify-end items-center mb-5">
   <button
     onclick={openRefundModal}
@@ -309,10 +308,7 @@ function goToRefund( type : 'hsc'|'ssc'){
         </div>
 
       </div>
-
-
       <TransactionTable {transactions} {searchedSeat} />
-
 
     {/if}
 

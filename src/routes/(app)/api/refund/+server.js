@@ -1,6 +1,6 @@
 import { json } from '@sveltejs/kit';
-import db from '$lib/server/db.js';       // HSC
-import SSCdb from '$lib/server/SSCdb.js'; // SSC
+import db from '$lib/server/db.js';
+import SSCdb from '$lib/server/SSCdb.js';
 
 export async function POST({ request }) {
     try {
@@ -11,16 +11,16 @@ export async function POST({ request }) {
        // console.log("Parsedara1 ___",parsedData);
         
 
-        // ── Pick correct DB 
+        // Pick correct DB
         const pool = board === 'HSC' ? db : SSCdb;
 
-        // ── Get subject master 
+        // Get subject master
         const subjectMasterResult = await pool.query(
             `SELECT subj_name, subj_code FROM subject_master`
         );
         const subjectMaster = subjectMasterResult.rows;
 
-        // ── Build subject map 
+        //Build subject map
         const subjectMap = new Map(
             subjectMaster.map((s) => [s.subj_name, s.subj_code])
         );
@@ -29,13 +29,13 @@ export async function POST({ request }) {
                 subjCode: subjectMap.get(e.trim()),
             }));
 
-        // ── Add subjectCodes 
+        //Add subjectCodes
         const sabpaisaData = parsedData.map((e) => ({
             ...e,
             subjectCodes: getSubjectCode(e.Udf3),
         }));
 
-        // ── Tag duplicates 
+        //Tag duplicates
         const seen = new Map();
         const taggedSabpaisaData = sabpaisaData.map((item) => {
             const baseKey = `${item.Udf1}_${item.Udf2}`;
@@ -53,7 +53,7 @@ export async function POST({ request }) {
             return { ...item, tag };
         });
 
-        // ── Check in DB 
+        //Check in DB
         const result = await pool.query(`
             SELECT recheck_application_id, seat_no, recheck_type,
                    sabpaisa_trans_id, client_trans_id
@@ -81,7 +81,6 @@ export async function POST({ request }) {
 
         //console.log("taged_parserdata",taggedSabpaisaData);
         
-
         return json({
             success: true,
             processed: taggedSabpaisaData.length,

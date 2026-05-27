@@ -3,10 +3,7 @@ import db from '$lib/server/reprint.js';
 import axios from 'axios';
 import crypto from 'crypto';
 
-
 const algorithm = "aes-128-cbc";
-// const authKey = "kaY9AIhuJZNvKGp2";
-// const authIV = "YN2v8qQcU3rGfA1y";
 
 let authKey = "beHd9HZjbsFHI3y6"; 
 let authIV = "Ic2J4lTIJsWuPvVo";
@@ -43,7 +40,6 @@ function parseDecrypted(text) {
 
   return obj;
 }
-
 
 const checkTransactionStatus = async ({
 	encoded_data,
@@ -149,7 +145,7 @@ export async function GET({ url }) {
 				// 	response:response?.data?.statusResponseData ? decrypt(response.data.statusResponseData) : []
 				// };
 
-        return {
+               return {
 					client_txn_id: element.client_txn_id,
 					seat_no: element.seat_no,
 					response: response?.data?.statusResponseData

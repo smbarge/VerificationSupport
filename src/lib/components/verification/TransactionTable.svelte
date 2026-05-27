@@ -3,7 +3,7 @@ import { checkApplied } from '$lib/api/api.js';
 import { insertResponse, insertTransaction ,fetchRecheckTransactions } from '$lib/api/api.js';
 
 
-   type TxnStatus = 'success' | 'failed' | 'aborted' | 'refunded' | 'unknown';
+type TxnStatus = 'success' | 'failed' | 'aborted' | 'refunded' | 'unknown';
 
   interface Transaction {
     txnId:   string;
@@ -46,22 +46,18 @@ import { insertResponse, insertTransaction ,fetchRecheckTransactions } from '$li
   let matchedSubjects: any[] = [];
 
   let isAlreadyApplied = false;
-let checkingApplied  = false;
+  let checkingApplied  = false;
 
-//veriables for the inserting 
-let inserting           = false;
-let insertDone          = false;
-let insertError         = '';
-let insertingResponse   = false;
-let insertResponseDone  = false;
-let insertResponseError = '';
-
-
-
+  //veriables for the inserting
+  let inserting           = false;
+  let insertDone          = false;
+  let insertError         = '';
+  let insertingResponse   = false;
+  let insertResponseDone  = false;
+  let insertResponseError = '';
 
 
   // let modalData: Record<string, any> | null = null;
-
 
   // function openModal(t: Transaction) {
   //   modalTxnId = t.txnId;
@@ -91,7 +87,7 @@ let insertResponseError = '';
   }
 
   checkingApplied = false;
-}
+  }
 
   function closeModal() {
     modalOpen  = false;
@@ -194,6 +190,7 @@ function getStatusLabel(status: TxnStatus): string {
 //   console.log('Insert transaction:', data);
 //   // your insert logic here
 // }
+
 
 
 //insert responce function 
@@ -493,7 +490,6 @@ $: if(searchedSeat){
 </div>
 {/if}
 
-
 <!-- TRANSACTION TABLE COMPONENT -->
 <div class="bg-white rounded-2xl shadow border border-gray-100 overflow-hidden">
 
@@ -760,6 +756,7 @@ $: if(searchedSeat){
          <td class="px-4 py-3 text-gray-500 whitespace-nowrap">
             {new Date(row.date).toLocaleString()}
           </td>
+
 
           <td class="px-4 py-3">
             <span class="font-mono text-xs bg-gray-50 px-2 py-1 rounded text-gray-600">

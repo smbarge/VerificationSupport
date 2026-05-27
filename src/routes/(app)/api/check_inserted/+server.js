@@ -13,7 +13,7 @@ export async function GET({ url }) {
   try {
     const seat         = url.searchParams.get('seat');
     const recheckType  = url.searchParams.get('recheck_type');  // from udf1
-    const subjectsRaw  = url.searchParams.get('subjects');      // from udf3 comma separated
+    const subjectsRaw  = url.searchParams.get('subjects');      // from udf3
 
     if (!seat) {
       return json({ error: -1 ,errorMsg :' Seat number is required' }, { status: 400 });

@@ -148,6 +148,7 @@ WHERE pending_recheck_application_id IN (SELECT pending_recheck_application_id F
     };
   }
 };
+
 export const addRecheckApplication = async ({
   db,
   pendingRecheckApplicationId,

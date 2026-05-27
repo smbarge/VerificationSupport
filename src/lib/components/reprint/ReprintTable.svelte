@@ -18,7 +18,7 @@
 
   export let transactions: Transaction[] = [];
   export let searchedSeat: string        = '';
-  export let actualSeat: string          = '';   // ← ADD THIS
+  export let actualSeat: string          = '';
 
 
   let filterStatus = '';
@@ -26,7 +26,7 @@
   let modalOpen  = false;
   let modalData: Record<string, any> | null = null;
   let modalTxnId = '';
-  let modalStatus: TxnStatus = 'unknown';  // ADD THIS
+  let modalStatus: TxnStatus = 'unknown';
 
   // Update Response state
   let appStatus      : string | null = null;
@@ -36,19 +36,19 @@
   let updateAppError = '';
 
   async function openModal(t: Transaction) {
-    modalTxnId     = t.txnId;
-    modalData      = t.raw ?? {};
-    modalOpen      = true;
-     modalStatus    = t.status;   
+  modalTxnId     = t.txnId;
+  modalData      = t.raw ?? {};
+  modalOpen      = true;
+  modalStatus    = t.status;
 
     // reset
-    appStatus      = null;
-    checkingApp    = false;
-    updatingApp    = false;
-    updateAppDone  = false;
-    updateAppError = '';
+  appStatus      = null;
+  checkingApp    = false;
+  updatingApp    = false;
+  updateAppDone  = false;
+  updateAppError = '';
 
-    if (t.status === 'success') {
+  if (t.status === 'success') {
       const tempId = String(t.raw?.udf1 ?? '');
       console.log('udf1 tempId:', tempId);  
 
@@ -60,7 +60,7 @@
          console.log('appStatus:', status); // debug
         checkingApp = false;
       }
-    }
+  }
   }
 
   function closeModal() {
@@ -470,16 +470,8 @@
 
 </div>
 
-
-
-
 <!-- 
-
-
-
 //////
-
-
 <script lang="ts">
 // import { checkApplied } from '$lib/api/api.js';
 import { checkApplicationStatus, updateApplicationResponse } from '$lib/api/reprintapi';
@@ -509,9 +501,6 @@ import { checkApplicationStatus, updateApplicationResponse } from '$lib/api/repr
   let modalData: Record<string, string> | null = null;
   let modalTxnId = '';
   let matchedSubjects: any[] = [];
-
-
-
 
   // let modalData: Record<string, any> | null = null;
 
@@ -657,6 +646,5 @@ function getStatusLabel(status: TxnStatus): string {
 //   console.log('Insert transaction:', data);
 //   // your insert logic here
 // }
-
 
 </script> -->
